@@ -1,8 +1,6 @@
 import 'dart:convert';
 
 import 'package:requests/requests.dart';
-import 'package:requests/src/serializable/list.dart';
-import 'package:requests/src/serializable/serializable.dart';
 
 class TODO {
   final int userId;
@@ -36,12 +34,10 @@ class TODOListDecoder extends Serializable<List<TODO>> {
 }
 
 void main() async {
-  client
-    ..registerSerializable(TODOListDecoder())
-    ..registerSerializable(SerializableList<String>());
+  client.registerSerializable(TODOListDecoder());
 
-  final user = await client.get<List<TODO?>>(
-    Uri.http('[::]:8000', '/todos.json'),
+  final user = await client.get<List<TODO>>(
+    Uri.https('jsonplaceholder.typicode.com', '/todos'),
   );
 
   print(user.value);
