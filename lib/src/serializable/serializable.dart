@@ -1,3 +1,4 @@
+import 'package:http/http.dart';
 import 'package:meta/meta.dart' show immutable, internal, nonVirtual;
 
 ///
@@ -9,5 +10,5 @@ abstract class Serializable<T> {
   final Type type = T;
 
   ///
-  T read(String source);
+  T read(Response source);
 }

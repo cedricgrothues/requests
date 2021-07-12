@@ -55,7 +55,7 @@ class SerializableClient {
     try {
       final value = _serializables
           .singleWhere((element) => element.type == T)
-          .read(response.body);
+          .read(response);
 
       return SerializedResponse(
         value,
