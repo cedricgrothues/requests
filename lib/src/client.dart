@@ -32,7 +32,7 @@ class SerializableClient {
   /// and [override] is set to `false`, a [RequestsError] will be thrown.
   void registerSerializable<T>(Serializable<T> serializable,
       {bool override = false}) {
-    final exists = _serializables.whereType<Serializable<T>>().isNotEmpty;
+    final exists = _serializables.any((element) => element.type == T);
 
     if (exists) {
       if (!override) {
@@ -41,7 +41,7 @@ class SerializableClient {
 
       print('Overriding decoder of type ${serializable.runtimeType}.');
 
-      _serializables.removeWhere((element) => element is Serializable<T>);
+      _serializables.removeWhere((element) => element.type == T);
     }
 
     _serializables.add(serializable);
@@ -54,8 +54,7 @@ class SerializableClient {
 
     try {
       final value = _serializables
-          .whereType<Serializable<T>>()
-          .single
+          .singleWhere((element) => element.type == T)
           .read(response.body);
 
       return SerializedResponse(
