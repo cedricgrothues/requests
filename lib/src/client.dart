@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:http/http.dart' show Client, Response;
+import 'package:logging/logging.dart';
 import 'package:meta/meta.dart';
 
 import 'package:requests/src/response.dart';
@@ -16,6 +17,8 @@ class SerializableClient {
   final Client _client;
 
   final List<Serializable> _serializables;
+
+  late final _logger = Logger('$runtimeType');
 
   /// Creates a [SerializableClient] with decoders for `Map<String, dynamic>`
   /// and `List<dynamic>`.
@@ -32,16 +35,19 @@ class SerializableClient {
   /// and [override] is set to `false`, a [RequestsError] will be thrown.
   void registerSerializable<T>(Serializable<T> serializable,
       {bool override = false}) {
-    final exists = _serializables.any((element) => element.type == T);
+    final exists =
+        _serializables.any((element) => element.type == serializable.type);
 
     if (exists) {
       if (!override) {
         throw RequestsError('A serializable for type $T already exists.');
       }
 
-      print('Overriding decoder of type ${serializable.runtimeType}.');
+      _logger
+          .warning('Overriding decoder of type ${serializable.runtimeType}.');
 
-      _serializables.removeWhere((element) => element.type == T);
+      _serializables
+          .removeWhere((element) => element.type == serializable.type);
     }
 
     _serializables.add(serializable);
@@ -57,7 +63,7 @@ class SerializableClient {
           .singleWhere((element) => element.type == T)
           .read(response);
 
-      return SerializedResponse(
+      return SerializedResponse<T>(
         value,
         response.statusCode,
         contentLength: response.contentLength,

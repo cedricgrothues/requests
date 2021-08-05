@@ -1,13 +1,13 @@
 import 'package:http/http.dart';
 import 'package:meta/meta.dart';
 
-///
+/// An extension to [BaseResponse] that adds a `value` property to the response.
 @immutable
 class SerializedResponse<T> extends BaseResponse {
-  ///
+  /// The serialized value of the response.
   final T value;
 
-  ///
+  /// Creates a new [SerializedResponse].
   @internal
   SerializedResponse(
     this.value,

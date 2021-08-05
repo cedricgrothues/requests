@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'dart:convert';
 
 import 'package:http/http.dart';
@@ -35,8 +37,10 @@ class SerializableTODOList extends Serializable<List<TODO>> {
 }
 
 void main() async {
-  final todos = await client.get<List<dynamic>>(
-    Uri.https('jsonplaceholder.typicode.com', '/todsos'),
+  client.registerSerializable(SerializableTODOList());
+
+  final todos = await client.get<List<TODO>>(
+    Uri.https('jsonplaceholder.typicode.com', '/todos'),
   );
 
   print(todos.value);
